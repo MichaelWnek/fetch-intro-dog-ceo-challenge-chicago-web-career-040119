@@ -1,1 +1,47 @@
 console.log('%c HI', 'color: firebrick')
+
+
+const imgUrl = "https://dog.ceo/api/breeds/image/random/4"
+function fetchDogs() {
+  fetch(imgUrl)
+  .then(res => res.json())
+  .then(json => {
+    json.message.forEach(dogImageUrl => {
+      let imageElement = document.createElement('img')
+      imageElement.src = dogImageUrl
+      document.querySelector("#dog-image-container").appendChild(imageElement)
+    })
+  })
+}
+
+  const breedUrl = 'https://dog.ceo/api/breeds/list/all'
+  function fetchBreeds(filter=undefined){
+    let container = document.querySelector("#dog-breeds")
+    container.innerHTML = ''
+    fetch(breedUrl)
+      .then(res => res.json())
+      .then(json => {
+        for(breed in json.message) {
+          if(!filter || breed.startsWith(filter)) {
+            let breedElement = document.createElement('li')
+            breedElement.innerHTML = breed
+            container.appendChild(breedElement)
+            breedElement.addEventListener("click", handleChangeColor)
+          }
+        }
+      })
+    }
+
+   function handleChangeColor(event){
+     event.target.style.color = 'green'
+   }
+
+    function handleDropDown(event){
+      fetchBreeds(event.target.value)
+    }
+
+    document.addEventListener("DOMContentLoaded", function(){
+      fetchDogs()
+      fetchBreeds()
+      document.querySelector('#breed-dropdown').addEventListener("change", handleDropDown)
+    })
